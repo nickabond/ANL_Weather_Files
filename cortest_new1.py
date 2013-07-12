@@ -1,12 +1,11 @@
 #!/usr/bin/python
 # Author: Nick Bond with code snippets compliments of UC
 # Purpose: This scripts is itended to read in values from a 
-#	   from a database using RabbitMQ as an intermediary.
+#	   from a database and used these values for computation.
 #          This particular script computes autocorrelation for
-#          solar irradiance and then plots them overlaying each 
-#          other. Additionally the plots are saved to a pdf 
-#          using a subprocess call and emailed to the respective 
-#          parties. 
+#          solar irradiance and then plots them on single plots.
+#          Additionally the plots are saved to a pdf using a 
+#          subprocess call and emailed to the respective parties. 
 
 #Some additional libraries from the University of Chicago are used. 
 
@@ -238,19 +237,7 @@ while Iterator <= 24:
 #
 ##########################################################
 
-##Note that commented out portions of this plotting code
-##could be used to plot singular pdf plots instead of 
-##overlayed charts.
 
-#	auCorr = autocorr(s1short)
-
-#	c3 = Curve()
-#	c3.addCurve( s1shXfloat )
-#	c3.addCurve( auCorr, '', 'Autocorrelation' )
-#	c3.PlotTitle = 'Autocorrelation'
-	
-#	w3 = plot(c3)
-#	plt.savefig('r.pdf') 
 	Time += 100
         Time2 += 100
 	Iterator +=1
