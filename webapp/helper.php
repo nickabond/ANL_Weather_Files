@@ -1,13 +1,18 @@
+
 <?php
+
+//Author: Nick Bond
+// Purpose: This is a helper script that pulls requested information from
+//          a database. 
 if(!$_GET['Date']) {
      $output = "alert('Input pattern incorrect');\n";
 }
 //error if cannot connect to db server
-elseif(!$link = mysql_connect('localhost', 'anluser', 'tdata97')) {
+elseif(!$link = mysql_connect('localhost', 'username', 'password')) {
      $output = "alert('Could not connect to database');\n";
 }
 //error if cannot select database
-elseif(!mysql_select_db('ANLTower1')) {
+elseif(!mysql_select_db('dbname')) {
      $output = "alert('Could not select database');\n";
 }
 else {
