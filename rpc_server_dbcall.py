@@ -71,7 +71,7 @@ def on_request(ch, method, props, body):
 
 		####Connecting to the database and setting ranges######
 
-		con = mdb.connect('localhost', 'username', 'password', 'tablename');
+		con = mdb.connect('localhost', 'username', 'password', 'database_name');
 		while Iterator <= 24:
         		print(Timenum)
         		print(Timenum2)
