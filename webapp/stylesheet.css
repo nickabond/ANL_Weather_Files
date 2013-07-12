@@ -1,0 +1,54 @@
+text-style:bold;
+color: white;
+}
+.top{
+padding:14px;
+}
+
+
+#gauges{
+background-color: gray;
+-moz-border-radius: 15px;
+border-radius: 15px;
+}
+body
+{
+padding-top: 50px;
+background-color:black;
+}
+
+ table, td, th
+{
+border:2px black;
+
+}
+
+
+th
+{
+background-color:#0C81C9;
+height:12px;
+color:white;
+padding:10px;
+
+}
+
+td
+{
+padding:10px;
+background-color:#9DA9B0;
+height:10px;
+vertical-align:bottom;
+text-align:center;
+}
+
+table
+{
+width:45%;
+border-collapse:collapse;
+}
+
+table, th, td
+{
+border: 2px solid black;
+}
