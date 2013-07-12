@@ -1,11 +1,17 @@
 #!/usr/bin/python
+# Author: Nick Bond
+# Purpose: This script is called from getANLData1.py and it 
+#          initiates an RPC action to a remote VM and it also
+#          sends with it a string containing our data from our
+#          previous script.
+
 import pika
 import uuid
 
 class RpcClient(object):
     def __init__(self):
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(
-                host='vm-103.alamo.futuregrid.org'))
+                host='hostname'))
 
         self.channel = self.connection.channel()
 
