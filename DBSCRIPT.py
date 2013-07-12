@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #Author: Nick Bond
 #Purpose: This script receives values using Rabbit MQ from a virtual
-         # machine and then inserts them into a mysql database. 
+#	  machine and then inserts them into a mysql database.
          
 import pika
 import sys
