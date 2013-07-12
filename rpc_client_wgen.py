@@ -4,11 +4,12 @@
 
 ### WEATHER GENERATOR RPC CLIENT ###
 # Author: Nick Bond
-# Purpose: This script initiates a database call through RabbitMQ
+# Purpose: This script initiates a RPC based database call through RabbitMQ
 #          and receives a string of data that we will use to compute
-#          autocorrelation in another script.The data is then plotted
-#          overlaying each other as time progresses. Additionally the 
-#          plots are saved to a PDF and emailed off. 
+#          autocorrelation. Using RabbitMQ there is no need for SSH key 
+#          authentication which is useful in a dynamic cloud environment. 
+#          The data is then plotted overlaying each other as time progresses. 
+#          Additionally the plots are saved to a PDF and emailed off. 
 
 
 import pika
