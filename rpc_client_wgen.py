@@ -1,6 +1,16 @@
 ### WEATHER GENERATOR RPC CLIENT ###
 
 #!/usr/bin/python
+
+### WEATHER GENERATOR RPC CLIENT ###
+# Author: Nick Bond
+# Purpose: This script initiates a database call through RabbitMQ
+#          and receives a string of data that we will use to compute
+#          autocorrelation in another script.The data is then plotted
+#          overlaying each other as time progresses. Additionally the 
+#          plots are saved to a PDF and emailed off. 
+
+
 import pika
 import uuid
 from subprocess import call
@@ -70,9 +80,9 @@ response = rpc.call('It works!')
 def autocorr(x):
     result = np.correlate(x, x, mode = 'full')
     maxcorr = np.argmax(result)
-    # print 'maximum = ', result[maxcorr]
+   
     result = result / result[maxcorr]
-    #   
+    
     return result[result.size/2:]
 
 
@@ -87,7 +97,6 @@ pdfnum= 1
 ###Getting Lower And Upper Bound Date and Times####
 
 timestamp_lower = time.time()
-#timestamp_upper = time.time()
 timestamp_lower = timestamp_lower - 24 * 60 * 60
 timestamp_lower=time.strftime("%Y-%m-%d", time.localtime(timestamp_lower))
 
@@ -118,15 +127,10 @@ timestamp_lower_end = timestamp_lower[-3:]
 Date = timestamp_lower1
 Date2 = timestamp_upper1
 
-#fig = pl.figure()
-#ax2 = pl.subplot(111)
-
 
 
 while index <= 23:
-#print " [.] Got %r" % (response,)
-#	pp = PdfPages('%sc.pdf'% index)		
-                        
+
 	Timenum_wcol = str(Timenum) 
         Timenum2_wcol = str(Timenum2) 
                        
@@ -161,9 +165,6 @@ while index <= 23:
 	print(s1)
 
 
-##################################################################################3
-# according to BJ, ch.2
-###################################################################################3
 	print '*************************************************'
 	global s1short, meanshort, stdShort, s1dev, s1shX, s1shXk
 
@@ -350,7 +351,7 @@ pp.close()
 #	Timenum +=1
 #	Timenum2 += 1
 
-#######PUT BACK LATER#####
+#######PUT BACK For Singular plots#####
 #	fig = pl.figure()
  #       ax = pl.subplot(111)
   #      ax.plot((s1shXfloat/4), new)
