@@ -1,4 +1,11 @@
 #!/usr/bin/python
+# Author: Nick Bond
+# Purpose: This script allows the user to strip off data
+# 	   from a website using a url library and then 
+#          make an remote procedure call using RabbitMQ
+#          to a virtual machine that in turn sends back an 
+#          acknoledgement. A message with the website data is 
+#          included with the RPC call. 
 
 import urllib
 import time
@@ -8,7 +15,7 @@ from subprocess import call
 
 
 
-url = 'http://www.atmos.anl.gov/ANLMET/anltower.now' #Pulling Data from ANL Tower
+url = 'http://www.atmos.anl.gov/ANLMET/anltower.now' #Pulling Data from ANL Tower site
 
 urlobj = urllib.urlopen(url)
 
@@ -41,6 +48,9 @@ Temperature10m_faren = data_new[528:530]
 Relative_humidity = data_new[594:598]
 
 print(data)
+
+##setting contents of message##
+
 data = [Relative_humidity,Temperature10m_faren,Temperature10m_cels,Sigma_theta10m,
 	Windspeed10m_deg, Windspeed10m_dir, Windspeed10m_cms, Windspeed10m_mph,
 	WBG_TempCels,WBG_TempFaren, Stability,Stability_cname,Net_rad, Solar_irad,
@@ -54,7 +64,7 @@ print(data)
 data=str(data) #Converting Data for Transport
 		
 connection = pika.BlockingConnection(pika.ConnectionParameters(
-host='vm-103.alamo.futuregrid.org'))
+host='hostname'))
 channel = connection.channel()
 
 channel.exchange_declare(exchange='weather_data',
@@ -66,6 +76,9 @@ channel.basic_publish(exchange='weather_data',
                       routing_key='ANL_Data',
                       body=message)
 print ('[x]')
+
+##RPC Call Subprocess##
+
 call(['python','rpc_client.py'])
 
 connection.close()
