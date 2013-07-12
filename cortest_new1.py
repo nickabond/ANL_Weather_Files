@@ -1,5 +1,15 @@
 #!/usr/bin/python
 # Author: Nick Bond with code snippets compliments of UC
+# Purpose: This scripts is itended to read in values from a 
+#	   from a database using RabbitMQ as an intermediary.
+#          This particular script computes autocorrelation for
+#          solar irradiance and then plots them overlaying each 
+#          other. Additionally the plots are saved to a pdf 
+#          using a subprocess call and emailed to the respective 
+#          parties. 
+
+#Some additional libraries from the University of Chicago are used. 
+
 import matplotlib as mpl
 mpl.use('Agg')
 from matplotlib.backends.backend_agg import FigureCanvasAgg
@@ -16,8 +26,6 @@ import base64
 from subprocess import call
 import time
 from datetime import datetime
-
-
 import numpy as np;
 import scipy.spatial.distance;
 
@@ -38,8 +46,6 @@ Iterator = 1
 Timenum=0
 Timenum2=1
 pdfnum= 0
-#Timenum_wcol = str(Timenum) + ':'
-#Timenum2_wcol = str(Timenum2) + ':'
 
 ###Getting Lower And Upper Bound Date and Times####
 
@@ -74,9 +80,10 @@ Date = timestamp_lower1
 Date2 = timestamp_upper1
 Time = 0
 Time2 = 0
+
 ####Connecting to the database and setting ranges######
 
-con = mdb.connect('vm-103.alamo.futuregrid.org', 'anluser', 'tdata97', 'ANLTower1');
+con = mdb.connect('hostname', 'username', 'password', 'tablename');
 while Iterator <= 24:
 	print(Timenum)
 	print(Timenum2)
@@ -99,16 +106,7 @@ while Iterator <= 24:
 			print(range1)
 			print(range2)
 
-#    		if Iterator <= 10:	
-#			range1='2013-06-12 '+'0%s:'% (Timenum) +'00:00'
-#			range2='2013-06-13 '+'0%s:'% (Timenum2) +'00:00' 
-#		if Iterator > 10 and Iterator <= 23:
-#			range1='2013-06-12 '+'%s:'% (Timenum) +'00:00' 
-#                       range2='2013-06-13 '+'%s:'% (Timenum2) +'00:00' 
-#		if Iterator == 24:
-#                        range1='2013-06-13 '+'00:' +'00:00'
-#                        range2='2013-06-14 '+'01:' +'00:00'
-
+      
     		cur = con.cursor()
     		cur.execute("SELECT (Solar_Irradiation) FROM ANL4 WHERE (ts BETWEEN ('%s') AND ('%s') )" %(range1,range2)) #fetching solar irradiation from database
 
@@ -124,9 +122,7 @@ while Iterator <= 24:
 		print(s1)
 			
 
-##################################################################################3
-# according to BJ, ch.2
-###################################################################################3
+
 	print '*************************************************'
 	global s1short, meanshort, stdShort, s1dev, s1shX, s1shXk
 
@@ -146,11 +142,11 @@ while Iterator <= 24:
 	sumY = 0
 	kk = 1
 	for ii in s1shX:
-    #print 'ii-1 = ',ii-1, 
+    
     		if ii > s1sh_len:
         		break
     		sumY += s1dev[ii-1]*s1dev[ii-1]
-    #print 'sumY = ',sumY, 's1dev**2 = ', s1dev[ii-1]*s1dev[ii-1]
+    
 
 	c0 = sumY / s1sh_len
 	print 'c0 = ', c0 
@@ -170,30 +166,30 @@ while Iterator <= 24:
 	for kk in s1shXk:
     		sumY = 0
     		for ii in s1shX:
-        #print 'ii-1 = ',ii-1, ' kk = ', kk, 'kk+ii-1 = ', kk+ii-1
+       
         		if ii >= s1sh_len or ii + kk - 1>=s1sh_len/nn:
             			break
         		sumY += s1dev[ii-1]*s1dev[ii+kk-1]
-        #print sumY, s1dev[ii-1], '*', s1dev[ii+kk-1]
+       
     		auCorrElement = sumY / (s1sh_len) #Y-Axis Value
     		auCorrElement = auCorrElement / c0
-    #print 'sum = ', sumY, ' element = ', auCorrElement
+    
     		auCorr.append(auCorrElement)
    
   		s1shX = s1shXk[:lenS1-kk]
-    #print 's1shX = ',s1shX
+ 
 
-#print 'AutoCorr = \n', auCorr
+
 #########################################################
 #
-# first 15 of above Values are consistent with
-# Box-Jenkins "Time Series Analysis", p.34 Table 2.2
+# 
+# Box-Jenkins "Time Series Analysis"
 #
 #########################################################
 	s1sh_sdt = s1dev.std()  # Standardabweichung short 
 	print '#########################################'
 
-#"Curve()" is a class from RTP ClimateUtilities.py
+
 
 	c2 = Curve()
 	
@@ -201,7 +197,6 @@ while Iterator <= 24:
 	s1shXfloat = s1shXk # to make floating point from integer
         print(len(s1shXfloat))             
 	print(len(new))
-#print 'test plotting ... ', s1shXk, s1shXfloat
 	c2.addCurve(s1shXfloat * 15)
 	c2.addCurve(auCorr, '', 'Autocorr')
 	c2.PlotTitle = 'Auto-Correlation For:' + ' %s %s UTC ' % (Date,Time) + '-' + '%s %s UTC' % (Date2,Time2)
@@ -214,7 +209,7 @@ while Iterator <= 24:
 	plt.xlabel('Time Lag (In Minutes)')
 	plt.ylabel('Autocorrelation')
 	plt.savefig(pp, format='pdf')
-#	plt.savefig('%sc.pdf' % pdfnum)
+#	
 	
 	## Second Plot (Time in 15 minute intervals V.S. Solar Irradiation) ##
 	fig = pl.figure()
@@ -224,7 +219,7 @@ while Iterator <= 24:
 	plt.xlabel('Time Lag (In 15 Minute Time Intervals)\nTotal Time Intervals: %s' % len(new))
         plt.ylabel('Autocorrelation')
 	plt.savefig(pp, format='pdf')
-	#plt.savefig('l.pdf')
+	
 	
 	## Third Plot (Time in UTC V.S. Autocorrelation)
 	c4 = Curve()
@@ -242,6 +237,10 @@ while Iterator <= 24:
 # now try function "autocorr(arr)" and plot it
 #
 ##########################################################
+
+##Note that commented out portions of this plotting code
+##could be used to plot singular pdf plots instead of 
+##overlayed charts.
 
 #	auCorr = autocorr(s1short)
 
