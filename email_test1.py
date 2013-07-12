@@ -1,5 +1,8 @@
 #!/usr/bin/python
-
+# Author: Nick Bond
+# Purpose: This script allows the user to send an email 
+#          with a PDF attachment. This example uses gmail
+#          but the concept is same with other email providers.
 import smtplib
 import base64
 
@@ -9,7 +12,7 @@ s.set_debuglevel(1)
 s.ehlo()
 s.starttls()
 s.ehlo()
-s.login('anlweathertower@gmail.com', 'Anltdata73')
+s.login('email_address', 'password')
 
 
 # Read a file and encode it into base64 format
@@ -17,15 +20,15 @@ fo = open(filename, "rb")
 filecontent = fo.read()
 encodedcontent = base64.b64encode(filecontent)  # base64
 
-sender = 'anlweathertower@gmail.com'
-reciever = 'nickabond@gmail.com'
+sender = 'sender_email_address'
+reciever = 'receiver_email_address'
 
-marker = "ANLTOWERDATA"
+marker = "marker"
 
 body ="""You will find a forecast of soil moisture, relative humidity, and solar irradiation for the next 24 hours attached."""
 # Define the main headers.
-part1 = """From: From ANL Weather Generator <anlweathertower@gmail.com.net>
-To: To Nick <nickabond@gmail.com>
+part1 = """From: From Title <sender_email_address>
+To: To John Smith <receiver_email_address>
 Subject: Sending Attachement
 MIME-Version: 1.0
 Content-Type: multipart/mixed; boundary=%s
