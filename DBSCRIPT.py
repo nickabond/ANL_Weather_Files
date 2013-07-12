@@ -67,7 +67,7 @@ def callback(ch, method, properties, body):
     ###Accessing the database and inserting values received from ANL Tower Data script###
         
 	try:
-                con = mdb.connect('localhost', 'username', 'password', 'tablename');
+                con = mdb.connect('localhost', 'username', 'password', 'datbasename');
 
                 with con:
                         cur = con.cursor(mdb.cursors.DictCursor)
