@@ -1,4 +1,9 @@
 #!/usr/bin/python
+# Author: Nick Bond
+# Purpose: This script listens for RPC calls from the rpc_call_wgen.py script
+#          upon recieving an RPC signal a pull from the database is initiated
+#          based on specific timestamp bounds. A string of the requested data
+#          is then sent back to the RPC client.
 import pika
 from subprocess import call
 import MySQLdb as mdb
@@ -8,30 +13,25 @@ from datetime import datetime
 
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host='vm-103.alamo.futuregrid.org'))
+        host='hostname'))
 
 channel = connection.channel()
 
 channel.queue_declare(queue='rpc_wgen_queue')
-#Iterator = 1
-#Timenum=0
-#Timenum2=1
-#pdfnum= 0
+
 
 def on_request(ch, method, props, body):
 		n = str(body)
                 print(n)
-        #        call(['python','%s' %n ])
+      
 		print('%s'% n)
 	
-		# functions to be defined ... 
+	
 		Iterator = 1
 		Timenum=0
 		Timenum2=1
 		pdfnum= 0
-		#Timenum_wcol = str(Timenum) + ':'
-		#Timenum2_wcol = str(Timenum2) + ':'
-
+	
 		###Getting Lower And Upper Bound Date and Times####
 
 		timestamp_lower = time.time()
@@ -71,7 +71,7 @@ def on_request(ch, method, props, body):
 
 		####Connecting to the database and setting ranges######
 
-		con = mdb.connect('localhost', 'anluser', 'tdata97', 'ANLTower1');
+		con = mdb.connect('localhost', 'username', 'password', 'tablename');
 		while Iterator <= 24:
         		print(Timenum)
         		print(Timenum2)
