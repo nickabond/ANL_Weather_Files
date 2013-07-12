@@ -1,10 +1,14 @@
 #!/usr/bin/python
+#Author: Nick Bond
+#Purpose: This script receives values using Rabbit MQ from a virtual
+         # machine and then inserts them into a mysql database. 
+         
 import pika
 import sys
 import time
 import MySQLdb as mdb
 connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host='vm-103.alamo.futuregrid.org'))
+        host='hostname'))
 channel = connection.channel()
 
 channel.exchange_declare(exchange='weather_data',
@@ -21,7 +25,7 @@ def callback(ch, method, properties, body):
         print (body)
         body_list=eval(body) #Body converted back from a string to a list
         
-
+###Taking the necessary values from the RabbitMQ Message after evaluation###
 
         Relative_humidity = float(body_list[0]) #Variables Reassigned to Their Values
         Temperature10m_faren = float(body_list[1])
@@ -60,14 +64,15 @@ def callback(ch, method, properties, body):
                Barometric_kpa, Barometric_in, Temperature60m_faren, Temperature60m_cels,
                Sigma_theta60m,Windspeed60m_deg,Windspeed60m_cms, Windspeed60m_mph, datetime, Windspeed60m_dir)
 
+    ###Accessing the database and inserting values received from ANL Tower Data script###
         
 	try:
-                con = mdb.connect('localhost', 'anluser', 'tdata97', 'ANLTower1');
+                con = mdb.connect('localhost', 'username', 'password', 'tablename');
 
                 with con:
                         cur = con.cursor(mdb.cursors.DictCursor)
-  
-			                     
+  			
+			##Creates table if it does not already exist.##                     
                        	try:
 					sql2= """CREATE TABLE ANL4(ts TIMESTAMP,Date VARCHAR(20), Time INT, Relative_Humidity VARCHAR(12), Temperature_10m_F VARCHAR(12), Temperature_10m_C VARCHAR(12),
                                         Sigma_Theta_10m VARCHAR(12), Wind_10m_Degrees VARCHAR(12), Wind_Direction_10m VARCHAR(12),Windspeed_10m_cms VARCHAR(12), Windspeed_10m_mph VARCHAR(12),
